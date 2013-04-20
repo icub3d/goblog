@@ -230,21 +230,22 @@ func (be *BlogEntry) gleanInfo(contents string) error {
 		return err
 	}
 
-    created,updated,err := fs.GetTimes(be.Path)
-    if err != nil {
-        return err
-    }
-    _created,err := regexSingle("Created",contents)
-    be.Created,err = time.Parse("2006-01-02",_created)
-    if err != nil {
-        be.Created = created
-    }
+	created, updated, err := fs.GetTimes(be.Path)
+	if err != nil {
+		return err
+	}
 
-    _updated,err := regexSingle("Updated",contents)
-    be.Updated,err = time.Parse("2006-01-02",_updated)
-    if err != nil {
-        be.Updated = updated
-    }
+	_created, err := regexSingle("Created", contents)
+	be.Created, err = time.Parse("2006-01-02", _created)
+	if err != nil {
+		be.Created = created
+	}
+
+	_updated, err := regexSingle("Updated", contents)
+	be.Updated, err = time.Parse("2006-01-02", _updated)
+	if err != nil {
+		be.Updated = updated
+	}
 
 	return nil
 }
