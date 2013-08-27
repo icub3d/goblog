@@ -11,7 +11,7 @@ Installation
 
 You'll want go installed on your system, then you just need to 
 
-    go install github.com/icub3d/goblog
+    go get github.com/icub3d/goblog
 	
 This will install the binary *goblog* into *$GOPATH/bin*. Alternativel, you can download the source and do it yourself. See if I care.
 
