@@ -7,7 +7,7 @@ group and one of them joked you could write your own over a
 weekend. Mission accomplished. 
 
 Installation
-============
+------------
 
 You'll want go installed on your system, then you just need to 
 
@@ -16,7 +16,7 @@ You'll want go installed on your system, then you just need to
 This will install the binary *goblog* into *$GOPATH/bin*. In this case, you have to [set](http://golang.org/doc/code.html#GOPATH) properly GOPATH and GOROOT. Alternatively, you can download the source and do it yourself.
 
 Usage
-=====
+-----
 
 All directory locations are configurable, but it is generally considered
 wise to have a single place for your blog.
@@ -43,10 +43,12 @@ system to display specific values. You can see
 [my own blog](https://github.com/icub3d/joshua.themarshians.com) for
 an example.
 
-A *site.html* template is the template for every page. A
-*archive.html* template is used for printing a list of all your blog
-entries. A *about.html* template is used for displaying information
-about yourself. A *entries.html* template is used to display multiple
-blog entries on the *index.html* page. A *entry.html* template renders
-a single blog entry. A *tags.html* template renders all of the blog
-tags into a page.
+Templates
+---------
+
+  * The *site.html* template is the template for every page.
+  * The *archive.html* template is used for printing a list of all your blog entries.
+  * The *about.html* template is used for displaying information about yourself.
+  * The *entries.html* template is used to display multiple blog entries on the *index.html* page.
+  * The *entry.html* template renders a single blog entry.
+  * The *tags.html* template renders all of the blog tags into a page.
