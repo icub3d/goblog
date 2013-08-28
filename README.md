@@ -13,29 +13,31 @@ You'll want go installed on your system, then you just need to
 
     go get github.com/icub3d/goblog
 	
-This will install the binary *goblog* into *$GOPATH/bin*. Alternativel, you can download the source and do it yourself. See if I care.
+This will install the binary *goblog* into *$GOPATH/bin*. In this case, you have to [set](http://golang.org/doc/code.html#GOPATH) properly GOPATH and GOROOT. Alternatively, you can download the source and do it yourself.
 
 Usage
 =====
 
-All directory locations are congurable, but it is generally considered
+All directory locations are configurable, but it is generally considered
 wise to have a single place for your blog.
+
+The default blog directory structure is this:
 
     $ ls
     blogs  public  static  templates
 
-The *blogs* directory contains all of your blog entries. Each file
+  * The *blogs* directory contains all of your blog entries. Each file
 within that directory or any sub-directory that ends in *.md* will be
 processed as a blog entry. Goblog uses markdown (like github), so feel
 free to mark down your blog.
 
-The *public* directory is where your generated code will go. You'll want
+  * The *public* directory is where your generated code will go. You'll want
 to point your web server to that location.
 
-The *static* directory contains static assets like CSS, JavaScript,
+  * The *static* directory contains static assets like CSS, JavaScript,
 images, etc that your blog needs to function.
 
-The *templates* directory contains a list of html templates to use
+  * The *templates* directory contains a list of html templates to use
 when generating the site. Each of the templates use go's templating
 system to display specific values. You can see
 [my own blog](https://github.com/icub3d/joshua.themarshians.com) for
