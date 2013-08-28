@@ -56,9 +56,23 @@ Templates
 
 ### Template fields
 
-#### Page fields
+#### Entry fields
 
-  * `Title`: Title of the post
-  * `Created`: Data of creation of the post
-  * `Tags`: A list of tags. Example: Tags: linux, oss, informatics
+You could specify fields in each entry blog. Contrary to other static blog generator which allow
+YAML headers within markdown file for specifying tags, Goblog allow tags marked as XHTML comment.
+That is, if we want to set a tag with name `Foo`, we have to write:
+
+    <pre>
+    <code>
+    <!-- Foo: value -->
+    
+    This is a normal Markdown text...
+    </code>
+    </pre>
+    
+The entry fields which Goblog recognizes are: 
+
+  * `Title`: Title of the post, without quotes. Example: `Title: This if my first post`
+  * `Created`: Data of creation of the post. The format of the date is YYYY-MM-DD. Example: `Created: 2013-07-18`
+  * `Tags`: A list of tags. Example: `Tags: linux, oss, informatics`
 
