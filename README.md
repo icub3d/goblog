@@ -58,13 +58,13 @@ Templates
 
 #### Entry fields
 
-You could specify fields in each entry blog. Contrary to other static blog generator which allow
-YAML headers within markdown file for specifying tags, Goblog allow tags marked as XHTML comment.
-That is, if we want to set a tag with name `Foo`, we have to write:
+You could specify fields in each entry blog. Contrary to other static blog generator which use YAML
+headers within markdown file for setting fields, Goblog use XHTML comments for that.
+That is, if we want to set a tag with name `Foo` with `bla` value, we have to write:
 
     <pre>
     <code>
-    <!-- Foo: value -->
+    <!-- Foo: bla -->
     
     This is a normal Markdown text...
     </code>
