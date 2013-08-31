@@ -263,7 +263,12 @@ func regexList(key, contents string) ([]string, error) {
 		return []string{}, nil
 	}
 
-	return strings.Split(val, ","), nil
+	parts := strings.Split(val, ",")
+	for k, part := range parts {
+		parts[k] = strings.TrimSpace(part)
+	}
+
+	return parts, nil
 }
 
 // regexSingle is a helper function that performs a regex search for
