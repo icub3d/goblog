@@ -55,6 +55,13 @@ Each of the following templates are required. Without them, the system cannot ge
 
 Each template is rendered using Go's standard text/template library. When designing your templates, you can reference the documentation for the [templates package](http://godoc.org/github.com/icub3d/goblog/templates). For example, the _entry.html_ maps to the [MakeBlogEntry](http://godoc.org/github.com/icub3d/goblog/templates#Templates.MakeBlogEntry) function. In your _entry.html_ template, you'd put _{{.Title}}_ where you expect the title of the blog entry to go. You can see an example at my own [entry.html](https://github.com/icub3d/joshua.themarshians.com/blob/master/templates/entry.html).
 
+As a special case, the templating engine has some helper functions:
+
+  * _.Exec_ - you can include the output of a command line using this
+    helper. For example, `{{.Exec "/bin/bash" "-c" "git log
+    --pretty=oneline | wc -l "}}` would return the results of the
+    executed command which might be something like _30_.
+
 Blog Entry Meta Data
 --------------------
 
