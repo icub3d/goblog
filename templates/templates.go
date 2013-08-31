@@ -12,17 +12,19 @@ import (
 	"github.com/icub3d/goblog/tags"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"path"
 	"text/template"
 	"time"
 )
 
-// Templates is a set of goblog templates. 
+// Templates is a set of goblog templates.
 type Templates map[string]*template.Template
 
 // SiteData is a struct that contains all of the information necessary
 // for generating a site page.
 type SiteData struct {
+	Helper
 	Title       string
 	Description string
 	Author      string
@@ -32,6 +34,17 @@ type SiteData struct {
 	AtTags      bool
 	AtArchives  bool
 	AtAbout     bool
+}
+
+// Helper is included with each template data. It allows the methods
+// associated with this value to be run within the template.
+type Helper bool
+
+// Exec runs the given command and returns the combined output.
+func (h Helper) Exec(name string, args ...string) (string, error) {
+	cmd := exec.Command(name, args...)
+	output, err := cmd.CombinedOutput()
+	return string(output), err
 }
 
 // MakeAbout creates a complleted about HTML page and puts it into the
@@ -46,9 +59,10 @@ func (t Templates) MakeAbout(dir string) error {
 
 	// Make the data that will be passed to the templater.
 	data := struct {
+		Helper
 		CDate string
 	}{
-		time.Now().Format("2006-01-02"),
+		CDate: time.Now().Format("2006-01-02"),
 	}
 
 	// Perform the templating
@@ -74,13 +88,13 @@ func (t Templates) MakeAbout(dir string) error {
 // fill in the following values:
 //
 //      .CDate   - The date the page was created.
-//      .Years   - A slice of Years that contain blog entries. Each one 
+//      .Years   - A slice of Years that contain blog entries. Each one
 //	               contains:
 //        .Year   - The name of the Year (e.g. 2013).
 //        .Months - A slice of months for this year that contains blog
 //                  entries. Each one contains:
 //          .Month   - The name of the month (e.g. January).
-//          .Entries - A slice of blog entries for the given month of 
+//          .Entries - A slice of blog entries for the given month of
 //                     the given year. Each one contains:
 //            .CDate   - The date of the blog entry.
 //            .Url     - The url of the blog entry.
@@ -92,11 +106,12 @@ func (t Templates) MakeArchive(dir string, a []*archives.YearEntries) error {
 
 	// Make the data that will be passed to the templater.
 	data := struct {
+		Helper
 		Years []*archives.YearEntries
 		CDate string
 	}{
-		a,
-		time.Now().Format("2006-01-02"),
+		Years: a,
+		CDate: time.Now().Format("2006-01-02"),
 	}
 
 	// Perform the templating
@@ -124,8 +139,8 @@ func (t Templates) MakeArchive(dir string, a []*archives.YearEntries) error {
 //      .Entries - A list of entries to display. Each one contains:
 //        .CDate   - The date the entry was created.
 //        .Title   - The title of the entry.
-//        .UDate   - If the entry has changed since it's original 
-//                   creation, this will be the most recent update 
+//        .UDate   - If the entry has changed since it's original
+//                   creation, this will be the most recent update
 //                   date.
 //        .Content - The HTML formated Content of blog entry.
 //        .Tags    - A list of tags (strings) for the blog entry.
@@ -136,6 +151,7 @@ func (t Templates) MakeIndex(dir string, b []*blogs.BlogEntry) error {
 
 	// Make the HTML for each entry.
 	entries := struct {
+		Helper
 		Entries []struct {
 			*blogs.BlogEntry
 			Content string
@@ -227,11 +243,12 @@ func (t Templates) MakeTags(dir string, ta []*tags.TagEntry) error {
 
 	// Make the data that will be passed to the templater.
 	data := struct {
+		Helper
 		Tags  []*tags.TagEntry
 		CDate string
 	}{
-		ta,
-		time.Now().Format("2006-01-02"),
+		Tags:  ta,
+		CDate: time.Now().Format("2006-01-02"),
 	}
 
 	// Perform the templating
@@ -258,8 +275,8 @@ func (t Templates) MakeTags(dir string, ta []*tags.TagEntry) error {
 //
 //      .CDate - The date the entry was created.
 //      .Title   - The title of the entry.
-//      .UDate   - If the entry has changed since it's original 
-//                 creation, this will be the most recent update 
+//      .UDate   - If the entry has changed since it's original
+//                 creation, this will be the most recent update
 //                 date.
 //      .Content - The HTML formated Content of blog entry.
 //      .Tags    - A list of tags (strings) for the blog entry.
@@ -326,9 +343,11 @@ func (t Templates) makeBlogHelper(blog *blogs.BlogEntry,
 
 	// Make the data that will be passed to the templater.
 	templateData := struct {
+		Helper
 		*blogs.BlogEntry
 		Content string
 	}{
+		false,
 		blog,
 		contents,
 	}
@@ -345,21 +364,21 @@ func (t Templates) makeBlogHelper(blog *blogs.BlogEntry,
 //  about.html - The about page of the site.
 //    Variables:
 //      .CDate   - The date the page was created.
-//  archive.html - The archive page of the site. 
+//  archive.html - The archive page of the site.
 //    Variables:
 //  entries.html - Displays a list of entries.
 //    Variables:
 //      .Entries - A list of entries to display. Each one contains:
 //        .CDate   - The date the entry was created.
 //        .Title   - The title of the entry.
-//        .UDate   - If the entry has changed since it's original 
-//                   creation, this will be the most recent update 
+//        .UDate   - If the entry has changed since it's original
+//                   creation, this will be the most recent update
 //                   date.
 //        .Content - The HTML formated Content of blog entry.
 //        .Tags    - A list of tags (strings) for the blog entry.
 //  entry.html - Display a single entry.
 //    Variables:
-//  site.html - The sites main template. All pages derive from this 
+//  site.html - The sites main template. All pages derive from this
 //              template.
 //    Variables:
 //  tags.html - The sites list of tags.
