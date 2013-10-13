@@ -93,7 +93,7 @@ func (be *BlogEntry) PubDate() string {
 		return ""
 	}
 
-	return be.Created.Format(time.RFC822)
+	return be.Created.Format("02 Jan 2006 15:04 MST")
 }
 
 // UDate is a helper function for the templating system that returns
