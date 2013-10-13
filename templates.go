@@ -2,14 +2,11 @@
 // source code is governed by a BSD-style license that can be found in
 // the LICENSE file.
 
-package templates
+package main
 
 import (
 	"bytes"
 	"fmt"
-	"github.com/icub3d/goblog/archives"
-	"github.com/icub3d/goblog/blogs"
-	"github.com/icub3d/goblog/tags"
 	"io/ioutil"
 	"os"
 	"path"
@@ -17,7 +14,7 @@ import (
 	"time"
 )
 
-// Templates is a set of goblog templates. 
+// Templates is a set of goblog templates.
 type Templates map[string]*template.Template
 
 // SiteData is a struct that contains all of the information necessary
@@ -74,13 +71,13 @@ func (t Templates) MakeAbout(dir string) error {
 // fill in the following values:
 //
 //      .CDate   - The date the page was created.
-//      .Years   - A slice of Years that contain blog entries. Each one 
+//      .Years   - A slice of Years that contain blog entries. Each one
 //	               contains:
 //        .Year   - The name of the Year (e.g. 2013).
 //        .Months - A slice of months for this year that contains blog
 //                  entries. Each one contains:
 //          .Month   - The name of the month (e.g. January).
-//          .Entries - A slice of blog entries for the given month of 
+//          .Entries - A slice of blog entries for the given month of
 //                     the given year. Each one contains:
 //            .CDate   - The date of the blog entry.
 //            .Url     - The url of the blog entry.
@@ -88,11 +85,11 @@ func (t Templates) MakeAbout(dir string) error {
 //
 // The results of that templating are then used as the content for
 // calling MakeWebPage.
-func (t Templates) MakeArchive(dir string, a []*archives.YearEntries) error {
+func (t Templates) MakeArchive(dir string, a []*YearEntries) error {
 
 	// Make the data that will be passed to the templater.
 	data := struct {
-		Years []*archives.YearEntries
+		Years []*YearEntries
 		CDate string
 	}{
 		a,
@@ -124,25 +121,25 @@ func (t Templates) MakeArchive(dir string, a []*archives.YearEntries) error {
 //      .Entries - A list of entries to display. Each one contains:
 //        .CDate   - The date the entry was created.
 //        .Title   - The title of the entry.
-//        .UDate   - If the entry has changed since it's original 
-//                   creation, this will be the most recent update 
+//        .UDate   - If the entry has changed since it's original
+//                   creation, this will be the most recent update
 //                   date.
 //        .Content - The HTML formated Content of blog entry.
 //        .Tags    - A list of tags (strings) for the blog entry.
 //
 // The results of that templating are then used as the content for
 // calling MakeWebPage.
-func (t Templates) MakeIndex(dir string, b []*blogs.BlogEntry) error {
+func (t Templates) MakeIndex(dir string, b []*BlogEntry) error {
 
 	// Make the HTML for each entry.
 	entries := struct {
 		Entries []struct {
-			*blogs.BlogEntry
+			*BlogEntry
 			Content string
 		}
 	}{
 		Entries: []struct {
-			*blogs.BlogEntry
+			*BlogEntry
 			Content string
 		}{},
 	}
@@ -164,7 +161,7 @@ func (t Templates) MakeIndex(dir string, b []*blogs.BlogEntry) error {
 
 		// Save the blog and content.
 		entries.Entries = append(entries.Entries, struct {
-			*blogs.BlogEntry
+			*BlogEntry
 			Content string
 		}{
 			blog,
@@ -223,11 +220,11 @@ func removeDuplicates(a []string) []string {
 //
 // The results of that templating are then used as the content for
 // calling MakeWebPage.
-func (t Templates) MakeTags(dir string, ta []*tags.TagEntry) error {
+func (t Templates) MakeTags(dir string, ta []*Tag) error {
 
 	// Make the data that will be passed to the templater.
 	data := struct {
-		Tags  []*tags.TagEntry
+		Tags  []*Tag
 		CDate string
 	}{
 		ta,
@@ -258,15 +255,15 @@ func (t Templates) MakeTags(dir string, ta []*tags.TagEntry) error {
 //
 //      .CDate - The date the entry was created.
 //      .Title   - The title of the entry.
-//      .UDate   - If the entry has changed since it's original 
-//                 creation, this will be the most recent update 
+//      .UDate   - If the entry has changed since it's original
+//                 creation, this will be the most recent update
 //                 date.
 //      .Content - The HTML formated Content of blog entry.
 //      .Tags    - A list of tags (strings) for the blog entry.
 //
 // The results of that templating are then used as the content for
 // calling MakeWebPage.
-func (t Templates) MakeBlogEntry(dir string, blog *blogs.BlogEntry,
+func (t Templates) MakeBlogEntry(dir string, blog *BlogEntry,
 	contents string) error {
 
 	// Get the inner HTML.
@@ -321,12 +318,12 @@ func (t Templates) MakeWebPage(file string, sd *SiteData) error {
 
 // makeBLogHelper is a helper function that generates the main content
 // of a blog entry from the entry.html template.
-func (t Templates) makeBlogHelper(blog *blogs.BlogEntry,
+func (t Templates) makeBlogHelper(blog *BlogEntry,
 	contents string) (string, error) {
 
 	// Make the data that will be passed to the templater.
 	templateData := struct {
-		*blogs.BlogEntry
+		*BlogEntry
 		Content string
 	}{
 		blog,
@@ -345,21 +342,21 @@ func (t Templates) makeBlogHelper(blog *blogs.BlogEntry,
 //  about.html - The about page of the site.
 //    Variables:
 //      .CDate   - The date the page was created.
-//  archive.html - The archive page of the site. 
+//  archive.html - The archive page of the site.
 //    Variables:
 //  entries.html - Displays a list of entries.
 //    Variables:
 //      .Entries - A list of entries to display. Each one contains:
 //        .CDate   - The date the entry was created.
 //        .Title   - The title of the entry.
-//        .UDate   - If the entry has changed since it's original 
-//                   creation, this will be the most recent update 
+//        .UDate   - If the entry has changed since it's original
+//                   creation, this will be the most recent update
 //                   date.
 //        .Content - The HTML formated Content of blog entry.
 //        .Tags    - A list of tags (strings) for the blog entry.
 //  entry.html - Display a single entry.
 //    Variables:
-//  site.html - The sites main template. All pages derive from this 
+//  site.html - The sites main template. All pages derive from this
 //              template.
 //    Variables:
 //  tags.html - The sites list of tags.

@@ -2,14 +2,11 @@
 // source code is governed by a BSD-style license that can be found in
 // the LICENSE file.
 
-// Package blog contains structures, methods and functions for
-// manipulating blog entries.
-package blogs
+package main
 
 import (
 	"bytes"
-	"github.com/icub3d/goblog/fs"
-	md "github.com/russross/blackfriday"
+	"github.com/russross/blackfriday"
 	"io/ioutil"
 	"path"
 	"regexp"
@@ -73,7 +70,7 @@ func (be *BlogEntry) Parse() (string, error) {
 	}
 
 	// Return the markdown content.
-	return string(md.MarkdownCommon(orgContents)), nil
+	return string(blackfriday.MarkdownCommon(orgContents)), nil
 }
 
 // CDate is a helper function for the templating system that returns
@@ -230,7 +227,7 @@ func (be *BlogEntry) gleanInfo(contents string) error {
 		return err
 	}
 
-	created, updated, err := fs.GetTimes(be.Path)
+	created, updated, err := GetTimes(be.Path)
 	if err != nil {
 		return err
 	}

@@ -2,9 +2,7 @@
 // source code is governed by a BSD-style license that can be found in
 // the LICENSE file.
 
-// Package fs contains functions that access or modify the filesystem
-// that are useful to the goblog application.
-package fs
+package main
 
 import (
 	"fmt"

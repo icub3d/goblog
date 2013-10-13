@@ -6,12 +6,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/icub3d/goblog/archives"
-	"github.com/icub3d/goblog/blogs"
-	"github.com/icub3d/goblog/fs"
-	"github.com/icub3d/goblog/rss"
-	"github.com/icub3d/goblog/tags"
-	"github.com/icub3d/goblog/templates"
 	flag "github.com/ogier/pflag"
 	"os"
 )
@@ -32,7 +26,7 @@ func main() {
 	SetupDirectories()
 
 	// First load the templates.
-	tmplts, err := templates.LoadTemplates(TemplateDir)
+	tmplts, err := LoadTemplates(TemplateDir)
 	if err != nil {
 		fmt.Println("loading templates:", err)
 		os.Exit(1)
@@ -48,21 +42,21 @@ func main() {
 	}
 
 	// Make the output dir.
-	err = fs.MakeDirIfNotExists(OutputDir)
+	err = MakeDirIfNotExists(OutputDir)
 	if err != nil {
 		fmt.Println("making output dir:", err)
 		os.Exit(1)
 	}
 
 	// Now, move the static files over.
-	err = fs.CopyFilesRecursively(OutputDir, StaticDir)
+	err = CopyFilesRecursively(OutputDir, StaticDir)
 	if err != nil {
 		fmt.Println("making output dir:", err)
 		os.Exit(1)
 	}
 
 	// Get a list of files from the BlogDir.
-	entries, err := blogs.GetBlogFiles(BlogDir)
+	entries, err := GetBlogFiles(BlogDir)
 	if err != nil {
 		fmt.Println("getting blog file list:", err)
 		os.Exit(1)
@@ -91,19 +85,16 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Get a sorted list of tags.
-	tagentries := tags.ParseBlogs(entries)
-	t := tagentries.Slice()
-
 	// Generate the tags page.
-	err = tmplts.MakeTags(OutputDir, t)
+	tags := GetTags(entries)
+	err = tmplts.MakeTags(OutputDir, tags.Slice())
 	if err != nil {
 		fmt.Println("generating tags.html:", err)
 		os.Exit(1)
 	}
 
 	// Get a sort list of archives.
-	dateentries := archives.ParseBlogs(entries)
+	dateentries := ParseBlogs(entries)
 	a := dateentries.Slice()
 
 	// Generate the archive page.
@@ -114,7 +105,7 @@ func main() {
 	}
 
 	// Generate the index page.
-	mostRecent := archives.GetMostRecent(a, MaxIndexEntries)
+	mostRecent := GetMostRecent(a, MaxIndexEntries)
 	err = tmplts.MakeIndex(OutputDir, mostRecent)
 	if err != nil {
 		fmt.Println("generating index.html:", err)
@@ -122,7 +113,7 @@ func main() {
 	}
 
 	// Generate the RSS feed.
-	err = rss.MakeRss(archives.GetMostRecent(a, 10), URL, TemplateDir, OutputDir)
+	err = MakeRss(GetMostRecent(a, 10), URL, TemplateDir, OutputDir)
 	if err != nil {
 		fmt.Println("generating feed.rss:", err)
 		fmt.Println("no rss will be available")
