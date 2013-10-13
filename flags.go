@@ -9,6 +9,10 @@ import (
 	"path"
 )
 
+// Version is the flag used to print out the version of the
+// application.
+var Version bool
+
 // WorkingDir is the directory where that should be prepended to all
 // the other configurable directories.
 var WorkingDir string
@@ -38,6 +42,9 @@ var URL string
 var MaxIndexEntries int
 
 func init() {
+	flag.BoolVarP(&Version, "version", "v", false,
+		"Output the current version of the application.")
+
 	flag.StringVarP(&WorkingDir, "working-dir", "w", "./",
 		"The directory where all the other directories reside. This "+
 			"will be prepended to the rest of the configurable directories.")
@@ -62,6 +69,7 @@ func init() {
 
 	flag.IntVarP(&MaxIndexEntries, "index-entries", "i", 3,
 		"The maximum number of entries to display on the index page.")
+
 }
 
 // SetupDirectories is a helper function that prepends the working

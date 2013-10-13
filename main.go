@@ -16,9 +16,19 @@ import (
 	"os"
 )
 
+const (
+	version = "0.5.0"
+)
+
 func main() {
 	// Parse the flags.
 	flag.Parse()
+
+	if Version {
+		fmt.Println("goblog", version)
+		return
+	}
+
 	SetupDirectories()
 
 	// First load the templates.
