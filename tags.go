@@ -15,14 +15,14 @@ type Tag struct {
 	Name string
 
 	// The list of Entries associated with this tag.
-	Entries []*BlogEntry
+	Entries []*Entry
 }
 
-// Add links the given BlogEntry to this Tag.
-func (t *Tag) Add(e *BlogEntry) {
+// Add links the given Entry to this Tag.
+func (t *Tag) Add(e *Entry) {
 	// If it needs to be initialized, do that now.
 	if t.Entries == nil {
-		t.Entries = make([]*BlogEntry, 0, 0)
+		t.Entries = make([]*Entry, 0, 0)
 	}
 
 	t.Entries = append(t.Entries, e)
@@ -34,7 +34,7 @@ func (t *Tag) Add(e *BlogEntry) {
 type Tags map[string]*Tag
 
 // GetTags builds a Tags from the given list of blogs.
-func GetTags(entries []*BlogEntry) Tags {
+func GetTags(entries []*Entry) Tags {
 	t := make(Tags)
 
 	for _, blog := range entries {
@@ -44,15 +44,15 @@ func GetTags(entries []*BlogEntry) Tags {
 	return t
 }
 
-// Add links the given BlogEntry to all of it's tags.
-func (t Tags) Add(e *BlogEntry) {
+// Add links the given Entry to all of it's tags.
+func (t Tags) Add(e *Entry) {
 	for _, tag := range e.Tags {
 		f, ok := t[tag]
 		if !ok {
 			// It wasn't found, so create one.
 			t[tag] = &Tag{
 				Name:    tag,
-				Entries: []*BlogEntry{e},
+				Entries: []*Entry{e},
 			}
 		} else {
 			// Add it to the one we found.

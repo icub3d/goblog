@@ -14,10 +14,10 @@ import (
 	"time"
 )
 
-// BlogEntry is a representation of a blog entry. It contains the
+// Entry is a representation of a blog entry. It contains the
 // information necessary to generate the blogs contents and store
 // information about the blog.
-type BlogEntry struct {
+type Entry struct {
 	// Name is the name of the entry gleaned from the filename.
 	Name string
 
@@ -53,18 +53,18 @@ type BlogEntry struct {
 	Updated time.Time
 }
 
-// Parse reads the contents of the path for this BlogEntry. It gleans
-// information from the file and saves it to this BlogEntry. It then
+// Parse reads the contents of the path for this Entry. It gleans
+// information from the file and saves it to this Entry. It then
 // formats the markdown to HTML and returns that.
-func (be *BlogEntry) Parse() (string, error) {
+func (e *Entry) Parse() (string, error) {
 	// Get the files contents.
-	orgContents, err := ioutil.ReadFile(be.Path)
+	orgContents, err := ioutil.ReadFile(e.Path)
 	if err != nil {
 		return "", err
 	}
 
 	// Save some of the meta data.
-	err = be.gleanInfo(string(orgContents))
+	err = e.gleanInfo(string(orgContents))
 	if err != nil {
 		return "", err
 	}
@@ -75,37 +75,37 @@ func (be *BlogEntry) Parse() (string, error) {
 
 // CDate is a helper function for the templating system that returns
 // the Created date as a string or "" if there is no value.
-func (be *BlogEntry) CDate() string {
-	if be.Created.IsZero() {
+func (e *Entry) CDate() string {
+	if e.Created.IsZero() {
 		return ""
 	}
 
-	return be.Created.Format("2006-01-02")
+	return e.Created.Format("2006-01-02")
 }
 
 // PubDate is a helper function for the templating system that returns
 // the Created date as an RFC822 string or "" if there is no value.
-func (be *BlogEntry) PubDate() string {
-	if be.Created.IsZero() {
+func (e *Entry) PubDate() string {
+	if e.Created.IsZero() {
 		return ""
 	}
 
-	return be.Created.Format("02 Jan 2006 15:04 MST")
+	return e.Created.Format("02 Jan 2006 15:04 MST")
 }
 
 // UDate is a helper function for the templating system that returns
 // the Updated date as a string or "" if there is no value or if it's
 // identical to the Created date.
-func (be *BlogEntry) UDate() string {
-	if be.Updated.IsZero() {
+func (e *Entry) UDate() string {
+	if e.Updated.IsZero() {
 		return ""
 	}
 
-	if be.Created.Equal(be.Updated) {
+	if e.Created.Equal(e.Updated) {
 		return ""
 	}
 
-	return be.Updated.Format("2006-01-02")
+	return e.Updated.Format("2006-01-02")
 }
 
 // GetBlogFiles looks in the given directory for blog entries and
@@ -114,8 +114,8 @@ func (be *BlogEntry) UDate() string {
 // files is in a directory, the directory name is used as a prefix to
 // the blog entries name concatenated with a '-'. The blog is not
 // parsed or read. You should do that yourself elsewhere.
-func GetBlogFiles(dir string) ([]*BlogEntry, error) {
-	entries := []*BlogEntry{}
+func GetBlogFiles(dir string) ([]*Entry, error) {
+	entries := []*Entry{}
 
 	// Read the list of entries for dir.
 	files, err := ioutil.ReadDir(dir)
@@ -141,7 +141,7 @@ func GetBlogFiles(dir string) ([]*BlogEntry, error) {
 					return nil, err
 				}
 
-				entries = append(entries, &BlogEntry{
+				entries = append(entries, &Entry{
 					Name: newName,
 					Url:  newName + ".html",
 					Path: blog.Path,
@@ -159,7 +159,7 @@ func GetBlogFiles(dir string) ([]*BlogEntry, error) {
 			newName := pieces[0]
 
 			// Just create the new entry.
-			entries = append(entries, &BlogEntry{
+			entries = append(entries, &Entry{
 				Name: newName,
 				Url:  newName + ".html",
 				Path: p,
@@ -198,7 +198,7 @@ func MakeBlogName(names ...string) (string, error) {
 // gleanInfo is a helper function that searches for various comments
 // that contain useful information about the blog. It also uses fetchs
 // the update and create dates.
-func (be *BlogEntry) gleanInfo(contents string) error {
+func (be *Entry) gleanInfo(contents string) error {
 	/* These are the patterns we are searching for */
 	var err error
 
