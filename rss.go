@@ -2,14 +2,11 @@
 // source code is governed by a BSD-style license that can be found in
 // the LICENSE file.
 
-// Package rss contains structures, methods and functions for
-// making an rss feed.
-package rss
+package main
 
 import (
 	"bytes"
 	"fmt"
-	"github.com/icub3d/goblog/blogs"
 	"io/ioutil"
 	"path"
 	"regexp"
@@ -36,7 +33,7 @@ var sfeed = `<?xml version="1.0" encoding="UTF-8" ?>
 // MakeRss creates a completed feed.rss xml document and puts it into
 // the given directory. It uses the template from channel.rss to
 // populated the channel values except for the <item>s.
-func MakeRss(entries []*blogs.BlogEntry, url, tdir, dir string) error {
+func MakeRss(entries []*Entry, url, tdir, dir string) error {
 
 	// Get the channel data.
 	channelContent, err := ioutil.ReadFile(path.Join(tdir, "channel.rss"))
@@ -61,7 +58,7 @@ func MakeRss(entries []*blogs.BlogEntry, url, tdir, dir string) error {
 
 	// Make the data that will be passed to the templater.
 	data := struct {
-		Blogs          []*blogs.BlogEntry
+		Blogs          []*Entry
 		CreateDate     string
 		ChannelContent string
 	}{

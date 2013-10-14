@@ -2,14 +2,11 @@
 // source code is governed by a BSD-style license that can be found in
 // the LICENSE file.
 
-package templates
+package main
 
 import (
 	"bytes"
 	"fmt"
-	"github.com/icub3d/goblog/archives"
-	"github.com/icub3d/goblog/blogs"
-	"github.com/icub3d/goblog/tags"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -102,12 +99,12 @@ func (t Templates) MakeAbout(dir string) error {
 //
 // The results of that templating are then used as the content for
 // calling MakeWebPage.
-func (t Templates) MakeArchive(dir string, a []*archives.YearEntries) error {
+func (t Templates) MakeArchive(dir string, a []*YearEntries) error {
 
 	// Make the data that will be passed to the templater.
 	data := struct {
 		Helper
-		Years []*archives.YearEntries
+		Years []*YearEntries
 		CDate string
 	}{
 		Years: a,
@@ -147,18 +144,18 @@ func (t Templates) MakeArchive(dir string, a []*archives.YearEntries) error {
 //
 // The results of that templating are then used as the content for
 // calling MakeWebPage.
-func (t Templates) MakeIndex(dir string, b []*blogs.BlogEntry) error {
+func (t Templates) MakeIndex(dir string, b []*Entry) error {
 
 	// Make the HTML for each entry.
 	entries := struct {
 		Helper
 		Entries []struct {
-			*blogs.BlogEntry
+			*Entry
 			Content string
 		}
 	}{
 		Entries: []struct {
-			*blogs.BlogEntry
+			*Entry
 			Content string
 		}{},
 	}
@@ -180,7 +177,7 @@ func (t Templates) MakeIndex(dir string, b []*blogs.BlogEntry) error {
 
 		// Save the blog and content.
 		entries.Entries = append(entries.Entries, struct {
-			*blogs.BlogEntry
+			*Entry
 			Content string
 		}{
 			blog,
@@ -239,12 +236,12 @@ func removeDuplicates(a []string) []string {
 //
 // The results of that templating are then used as the content for
 // calling MakeWebPage.
-func (t Templates) MakeTags(dir string, ta []*tags.TagEntry) error {
+func (t Templates) MakeTags(dir string, ta []*Tag) error {
 
 	// Make the data that will be passed to the templater.
 	data := struct {
 		Helper
-		Tags  []*tags.TagEntry
+		Tags  []*Tag
 		CDate string
 	}{
 		Tags:  ta,
@@ -269,7 +266,7 @@ func (t Templates) MakeTags(dir string, ta []*tags.TagEntry) error {
 
 }
 
-// MakeBlogEntry creates a completed HTML page of the given blog entry
+// MakeEntry creates a completed HTML page of the given blog entry
 // and puts it in the given directory. It uses the template from
 // entry.html and will fill in the following values:
 //
@@ -283,7 +280,7 @@ func (t Templates) MakeTags(dir string, ta []*tags.TagEntry) error {
 //
 // The results of that templating are then used as the content for
 // calling MakeWebPage.
-func (t Templates) MakeBlogEntry(dir string, blog *blogs.BlogEntry,
+func (t Templates) MakeEntry(dir string, blog *Entry,
 	contents string) error {
 
 	// Get the inner HTML.
@@ -338,13 +335,13 @@ func (t Templates) MakeWebPage(file string, sd *SiteData) error {
 
 // makeBLogHelper is a helper function that generates the main content
 // of a blog entry from the entry.html template.
-func (t Templates) makeBlogHelper(blog *blogs.BlogEntry,
+func (t Templates) makeBlogHelper(blog *Entry,
 	contents string) (string, error) {
 
 	// Make the data that will be passed to the templater.
 	templateData := struct {
 		Helper
-		*blogs.BlogEntry
+		*Entry
 		Content string
 	}{
 		false,
