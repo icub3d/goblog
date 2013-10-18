@@ -172,14 +172,22 @@ func main() {
 	}
 
 	// Generate the index page.
-	err = tmplts.MakeIndex(OutputDir, ebd[:MaxIndexEntries])
+	c := MaxIndexEntries
+	if len(ebd) < c {
+		c = len(ebd)
+	}
+	err = tmplts.MakeIndex(OutputDir, ebd[:c])
 	if err != nil {
 		fmt.Println("generating index.html:", err)
 		os.Exit(1)
 	}
 
 	// Generate the RSS feed.
-	err = MakeRss(ebd[:10], URL, TemplateDir, OutputDir)
+	c = 10
+	if len(ebd) < c {
+		c = len(ebd)
+	}
+	err = MakeRss(ebd[:c], URL, TemplateDir, OutputDir)
 	if err != nil {
 		fmt.Println("generating feed.rss:", err)
 		fmt.Println("no rss will be available")
