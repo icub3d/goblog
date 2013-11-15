@@ -1,6 +1,8 @@
 Goblog
 ======
 
+[![GoDoc](https://godoc.org/github.com/icub3d/goblog?status.png)](http://godoc.org/github.com/icub3d/goblog)
+
 A static blog generator implemented in Go. This all started when looking for a static blog tool. I asked around in my local Linux user group and one of them joked you could write your own over a weekend. Mission accomplished.
 
 Installation
